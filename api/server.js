@@ -2,8 +2,8 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const session = require('express-session');
-const KnexSessionStore = require('connect-session-knex')(session);
+//const session = require('express-session');
+//const KnexSessionStore = require('connect-session-knex')(session);
 
 //import routers
 const authRouter = require('../auth/authRouter.js');
@@ -16,7 +16,7 @@ const knexConfig = require('../data/dbConfig.js');
 const server = express();
 
 //create config object for the session
-const sessionConfig = {
+/*const sessionConfig = {
     name: 'user', //default name is sid
     //use to encrypt and decrypt the cookie
     //use an environment variable for this, it should be dynamic, not hard coded
@@ -45,13 +45,21 @@ const sessionConfig = {
         clearInterval: 1000 * 60 * 30, // delete expired sessions every 30
   }),
 
-};
+};*/
 
 //mount global middleware
 server.use(express.json());
-server.use(session(sessionConfig));
+//server.use(session(sessionConfig));
 server.use(helmet());
-server.use(cors());
+server.use(cors({
+    credentials: true,
+    origin: (origin, callback) => {
+        callback(null, true);
+    }
+    //process.env.NODE_ENV === "producction"
+    // ? "http:test-website.netlify.com"
+    // : 'http:localhost:3000'
+}));
 
 //mount routers
 server.use('/api/auth', authRouter);

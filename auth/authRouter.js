@@ -49,15 +49,17 @@ authRouter.post('/login', (req, res) => {
         //check that passwords match
         if(user && bcrypt.compareSync(password, user.password)){
 
+            //generate token when we log in
             const token = generateToken(user);
             
+            //pass token along with response body
             res.status(200).json({ 
                 message: `Welcome ${user.first_name}!`, 
                  user : {
                         id: user.id,
                         first_name: user.first_name,
                         last_name: user.last_name,
-                        email: user.email,
+                        username: user.username,
                         password: user.password,
                         department: user.department
                 },
@@ -77,29 +79,17 @@ authRouter.post('/login', (req, res) => {
     })
 })
 
-authRouter.get('/logout', (req, res) => {
-    if(req.session){
-        req.session.destroy(err => {
-            if(err){
-                res.json({ message: 'There was an error logging you out!'})
-            }
-            else{
-                res.status(200).json({ message: 'See you again soon....Thanks for stoppying by!'})
-            }
-        })
-    }
-    else {
-        res.status(200).json({ message: 'Your are not currently logged in!'})
-    }
-})
-
 //could be in a separate file
 function generateToken(user){
 
+    //information about the payload, info we want to store along with that token
+    //put info front end might need like user role(admin/reg user), id, username, etc.
     const payload = {
-        username: user.username
+        username: user.username,
+        id: user.id,
     };
 
+    //determines when token is going to expire
     const options = {
         expiresIn: '1d'
     };
@@ -107,6 +97,7 @@ function generateToken(user){
     //calls jwt's sign method
     //secret is used to protect the token
     //library will produce a signature based on the secret you give it
+    //secrets.jwtSecret is referring to the imported jwtSecret object from the config/secrets.js file
     return jwt.sign(payload, secrets.jwtSecret, options);
 
 }
