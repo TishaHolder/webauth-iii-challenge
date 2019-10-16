@@ -29,7 +29,7 @@ function restricted (req, res, next){
                 //req.user is going to be sent on the request
                 //so req.user.username in the userRouter will produce the decodedToken.username
                 //****Luis used this in lecture => req.username = decodedToken.username;
-                req.user = {username: decodedToken.username};
+                req.user = {username: decodedToken.username, department: decodedToken.department};
                                 
                 next();
 

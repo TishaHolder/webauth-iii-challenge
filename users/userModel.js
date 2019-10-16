@@ -9,6 +9,7 @@ module.exports = {
     find,
     findByUserName,
     findById,
+    findByDepartment,
     add,
     update,
     remove
@@ -28,6 +29,15 @@ function findByUserName({ username }){
     .first();
 
 }
+
+function findByDepartment({ department }){
+
+    return db('users')
+    .where({ 'users.department': department })
+    .first();
+
+}
+
 
 function findById(id){
 

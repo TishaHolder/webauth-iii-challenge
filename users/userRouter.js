@@ -11,6 +11,7 @@ const restricted = require('../auth/restrictedMiddleware.js');
 const userRouter = express.Router();
 
 //end points beginning with /api/users
+//returns all users
 userRouter.get('/', restricted, (req, res) => {
 
     userDB.find()
@@ -24,6 +25,7 @@ userRouter.get('/', restricted, (req, res) => {
         res.status(500).json({ error: 'There was an error retrieving the users from the database.'});
     })
 })
+
 
 //export router
 module.exports = userRouter;

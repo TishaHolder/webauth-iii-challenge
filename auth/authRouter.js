@@ -87,6 +87,8 @@ function generateToken(user){
     const payload = {
         username: user.username,
         id: user.id,
+        department: user.department,
+
     };
 
     //determines when token is going to expire
