@@ -4,15 +4,18 @@ const express = require('express');
 //import data access file
 const userDB = require('./userModel.js');
 
+//import restricted middleware
+const restricted = require('../auth/restrictedMiddleware.js');
+
 //create router
 const userRouter = express.Router();
 
 //end points beginning with /api/users
-userRouter.get('/', (req, res) => {
+userRouter.get('/', restricted, (req, res) => {
 
     userDB.find()
     .then(users => {
-        res.status(200).json(users);
+        res.status(200).json({ users, loggedInUser: req.user.username });
     })
     .catch(error => {
         res.status(500).json({ error: 'There was an error retrieving the users from the database.'});

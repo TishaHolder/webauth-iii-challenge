@@ -10,6 +10,9 @@ const jwt = require('jsonwebtoken');
 //import data access file
 const authDB = require('../users/userModel.js');
 
+//import secrets
+const secrets = require ('../config/secrets.js');
+
 //create auth router
 const authRouter = express.Router();
 
@@ -28,7 +31,7 @@ authRouter.post('/register', (req, res) => {
      .then(user => {
 
         //send a token when the user registers so they can log in automatically
-         res.status(200).json(user);
+        res.status(200).json(user);
      })
      .catch(error => {
          console.log("registration error", error);
@@ -48,7 +51,19 @@ authRouter.post('/login', (req, res) => {
 
             const token = generateToken(user);
             
-            res.status(200).json({ token });
+            res.status(200).json({ 
+                message: `Welcome ${user.first_name}!`, 
+                 user : {
+                        id: user.id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        email: user.email,
+                        password: user.password,
+                        department: user.department
+                },
+                token,  
+                
+             });
         }
         else {
             // we will return 401 if the password or username are invalid
@@ -85,17 +100,14 @@ function generateToken(user){
         username: user.username
     };
 
-    const secret = 'keep it secret!';
-
     const options = {
         expiresIn: '1d'
-
-    }
+    };
 
     //calls jwt's sign method
     //secret is used to protect the token
     //library will produce a signature based on the secret you give it
-    return jwt.sign(payload, secret, options);
+    return jwt.sign(payload, secrets.jwtSecret, options);
 
 }
 

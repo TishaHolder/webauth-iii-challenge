@@ -37,10 +37,10 @@ function findById(id){
 }
 
 
-function add(first_name, last_name, username, password, departmment){
+function add({ first_name, last_name, username, password, department }){
 
     return db('users')
-    .insert({ first_name, last_name, username, password, password })
+    .insert({ first_name, last_name, username, password, department })
     .then ( ([id]) => {
         return findById(id);
     })
